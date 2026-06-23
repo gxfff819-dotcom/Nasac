@@ -1,0 +1,2559 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Revenant - Advanced Dashboard</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Outfit:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-deep: #0a0a14;
+            --card-bg: #13131f;
+            --glass-bg: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.05);
+            --accent-purple: #a855f7;
+            --accent-pink: #ec4899;
+            --accent-red: #dc143c;
+            --accent-cyan: #00f2ff;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-orange: #f59e0b;
+            --gradient-primary: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+            --text-main: #ffffff;
+            --text-muted: #6b7280;
+            --max-width: 500px;
+            --border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; outline: none; }
+        
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 120px;
+            background-image: 
+                linear-gradient(rgba(10, 10, 20, 0.95), rgba(10, 10, 20, 0.95)),
+                linear-gradient(0deg, rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+        }
+
+        h1, h2, h3, .tech-font { font-family: 'Rajdhani', sans-serif; }
+
+        .container {
+            width: 100%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* HEADER */
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 10px 0 25px 0;
+        }
+        
+        .logo {
+            font-family: 'Orbitron';
+            font-weight: 700;
+            font-size: 24px;
+            letter-spacing: 1px;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .header-btn { 
+            width: 40px; 
+            height: 40px; 
+            border-radius: 12px; 
+            background: var(--card-bg); 
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: var(--text-muted); 
+            font-size: 18px; 
+            transition: 0.3s; 
+            cursor: pointer; 
+        }
+        
+        .header-btn:active { 
+            transform: scale(0.95); 
+            background: rgba(255,255,255,0.05); 
+        }
+
+        /* WELCOME CARD */
+        .welcome-card { 
+            background: var(--gradient-primary);
+            border-radius: 24px;
+            padding: 25px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 150px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+        
+        .welcome-text {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .welcome-text p {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .welcome-text h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-mini {
+            background: rgba(0,0,0,0.2);
+            border-radius: 16px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-mini-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+        
+        .stat-mini-value {
+            font-size: 24px;
+            font-weight: 700;
+            font-family: 'Rajdhani';
+        }
+
+        /* SECTION HEADER */
+        .section-header { 
+            margin: 25px 0 15px 0;
+            font-size: 20px;
+            font-weight: 700;
+            font-family: 'Rajdhani';
+        }
+
+        /*  CAROUSEL */
+        .-wrapper {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding-bottom: 5px;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            margin-bottom: 15px;
+        }
+        
+        .-wrapper::-webkit-scrollbar { display: none; }
+        
+        .-card {
+            flex: 0 0 90%;
+            height: 200px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            scroll-snap-align: center;
+            background: var(--card-bg);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .-card:active { transform: scale(0.98); }
+        
+        .-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+        }
+        
+        .card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+        }
+        
+        .card-title {
+            font-family: 'Orbitron';
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 4px;
+            color: #fff;
+        }
+        
+        .card-sub {
+            font-size: 11px;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ACCOUNT STATS */
+        .account-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card.full { grid-column: span 2; }
+        
+        .manager-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .manager-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(220, 20, 60, 0.3);
+            border-color: var(--accent-red);
+        }
+        
+        .manager-card:active {
+            transform: scale(0.98);
+        }
+        
+        .stat-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .stat-icon.purple {
+            background: rgba(168, 85, 247, 0.15);
+            color: var(--accent-purple);
+        }
+        
+        .stat-icon.green {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-green);
+        }
+        
+        .stat-icon.orange {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--accent-orange);
+        }
+        
+        .stat-info h3 {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-info p {
+            font-size: 20px;
+            font-weight: 700;
+            font-family: 'Rajdhani';
+            margin-top: 2px;
+        }
+        
+        .stat-info p.purple { color: var(--accent-purple); }
+        .stat-info p.green { color: var(--accent-green); }
+        .stat-info p.orange { color: var(--accent-orange); }
+
+        /* ATTACK PAGE */
+        .header-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .header-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent-red), transparent);
+            animation: scanLine 3s linear infinite;
+        }
+
+        @keyframes scanLine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .logo-circle {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(220, 20, 60, 0.3), transparent 70%);
+            border: 3px solid var(--accent-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 
+                0 0 30px rgba(220, 20, 60, 0.4),
+                inset 0 0 20px rgba(220, 20, 60, 0.1);
+            animation: logoPulse 2s ease-in-out infinite;
+            overflow: hidden;
+        }
+
+        .logo-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: drop-shadow(0 0 10px rgba(220, 20, 60, 0.5));
+        }
+
+        .username {
+            font-family: 'Orbitron';
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(220, 20, 60, 0.5);
+        }
+
+        .video-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+        }
+
+        .video-wrapper {
+            width: 100%;
+            height: 160px;
+            position: relative;
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+        }
+
+        .input-section, .bug-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 25px 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+        }
+
+        .section-header-attack {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .section-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            background: rgba(220, 20, 60, 0.1);
+            border: 1px solid var(--accent-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-red);
+            font-size: 20px;
+        }
+
+        .section-title {
+            font-family: 'Orbitron';
+            font-size: 16px;
+            letter-spacing: 1px;
+            color: var(--text-main);
+        }
+
+        .input-box {
+            position: relative;
+            margin-bottom: 0;
+        }
+
+        .cyber-input {
+            width: 100%;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--border-color);
+            border-left: 3px solid var(--accent-red);
+            border-radius: 10px;
+            padding: 15px 15px 15px 50px;
+            color: #fff;
+            font-family: 'Share Tech Mono';
+            font-size: 14px;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        .cyber-input:focus {
+            background: rgba(220, 20, 60, 0.05);
+            border-color: var(--accent-red);
+            box-shadow: 0 0 20px rgba(220, 20, 60, 0.15);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 18px;
+        }
+
+        .cyber-input:focus ~ .input-icon {
+            color: var(--accent-red);
+        }
+
+        .dropdown-container {
+            position: relative;
+        }
+
+        .dropdown-trigger {
+            width: 100%;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--border-color);
+            border-left: 3px solid var(--accent-red);
+            border-radius: 10px;
+            padding: 15px;
+            color: #fff;
+            font-family: 'Share Tech Mono';
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dropdown-trigger:hover {
+            background: rgba(220, 20, 60, 0.05);
+            border-color: var(--accent-red);
+        }
+
+        .dropdown-arrow {
+            transition: transform 0.3s ease;
+            color: var(--accent-red);
+        }
+
+        .dropdown-trigger.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            width: 100%;
+            background: rgba(15, 15, 20, 0.98);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 100;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .dropdown-menu.show {
+            max-height: 400px;
+            opacity: 1;
+        }
+
+        .dropdown-item {
+            padding: 15px 20px;
+            color: #fff;
+            font-family: 'Share Tech Mono';
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(220, 20, 60, 0.1);
+            padding-left: 25px;
+        }
+
+        .dropdown-item.selected {
+            background: rgba(220, 20, 60, 0.15);
+            border-left: 3px solid var(--accent-red);
+        }
+
+        .dropdown-item i {
+            color: var(--accent-red);
+            font-size: 16px;
+            width: 20px;
+        }
+
+        .send-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-red), #a00);
+            border: none;
+            border-radius: 15px;
+            padding: 18px;
+            color: white;
+            font-family: 'Orbitron';
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 5px 20px rgba(220, 20, 60, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(220, 20, 60, 0.6);
+        }
+
+        .send-btn:active {
+            transform: translateY(0);
+        }
+
+        /* TOOLS PAGE - ANIME STREAMING */
+        .anime-header {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .anime-header h2 {
+            font-family: 'Orbitron';
+            font-size: 28px;
+            color: var(--accent-cyan);
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
+        }
+
+        .anime-header p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .anime-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .anime-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .anime-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 242, 255, 0.2);
+            border-color: var(--accent-cyan);
+        }
+
+        .anime-card:active {
+            transform: scale(0.98);
+        }
+
+        .anime-thumbnail {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .anime-thumbnail.anime1 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .anime-thumbnail.anime2 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .anime-thumbnail.anime3 {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .anime-thumbnail.anime4 {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .anime-thumbnail i {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+            color: rgba(255,255,255,0.9);
+            text-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .anime-info {
+            padding: 15px;
+        }
+
+        .anime-title {
+            font-family: 'Rajdhani';
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+.anime-genre {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+/* ANIME PLAYER MODAL */
+        .anime-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .anime-modal.show {
+            display: flex;
+        }
+
+        .anime-player {
+            width: 95%;
+            max-width: 800px;
+            background: var(--card-bg);
+            border: 2px solid var(--accent-cyan);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0, 242, 255, 0.3);
+            position: relative;
+        }
+
+        .player-header {
+            background: linear-gradient(135deg, rgba(0, 242, 255, 0.1), rgba(59, 130, 246, 0.1));
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .player-title {
+            font-family: 'Orbitron';
+            font-size: 18px;
+            color: var(--accent-cyan);
+        }
+
+        .close-player {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: 0.3s;
+        }
+
+        .close-player:hover {
+            background: var(--accent-red);
+            border-color: var(--accent-red);
+        }
+
+        .player-video {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+        }
+
+        .player-video iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .player-controls {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .player-description {
+            color: var(--text-muted);
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .player-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .player-stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .player-stat i {
+            color: var(--accent-cyan);
+        }
+
+        /* ADMIN PAGE */
+        .admin-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding-bottom: 40px;
+        }
+
+        .admin-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 25px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .admin-section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .admin-section-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid var(--accent-purple);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-purple);
+            font-size: 22px;
+        }
+
+        .admin-section-title {
+            font-family: 'Orbitron';
+            font-size: 18px;
+            letter-spacing: 1px;
+            color: var(--text-main);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            font-family: 'Rajdhani';
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-input {
+            width: 100%;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--border-color);
+            border-left: 3px solid var(--accent-purple);
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: #fff;
+            font-family: 'Share Tech Mono';
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            transition: 0.3s;
+        }
+
+        .form-input:focus {
+            background: rgba(168, 85, 247, 0.05);
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.15);
+        }
+
+        .form-select {
+            width: 100%;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--border-color);
+            border-left: 3px solid var(--accent-purple);
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: #fff;
+            font-family: 'Share Tech Mono';
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .form-select:focus {
+            background: rgba(168, 85, 247, 0.05);
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.15);
+        }
+
+        .form-select option {
+            background: var(--card-bg);
+            color: #fff;
+            padding: 10px;
+        }
+
+        .admin-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            border: none;
+            border-radius: 15px;
+            padding: 16px;
+            color: white;
+            font-family: 'Orbitron';
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 5px 20px rgba(168, 85, 247, 0.4);
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .admin-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(168, 85, 247, 0.6);
+        }
+
+        .admin-btn:active {
+            transform: translateY(0);
+        }
+
+        .admin-btn.delete {
+            background: linear-gradient(135deg, var(--accent-red), #a00);
+            box-shadow: 0 5px 20px rgba(220, 20, 60, 0.4);
+        }
+
+        .admin-btn.delete:hover {
+            box-shadow: 0 8px 25px rgba(220, 20, 60, 0.6);
+        }
+
+        .user-list {
+            max-height: 400px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-purple) transparent;
+        }
+
+        .user-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .user-list::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+
+        .user-list::-webkit-scrollbar-thumb {
+            background: var(--accent-purple);
+            border-radius: 10px;
+        }
+
+        .user-item {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .user-item:hover {
+            background: rgba(168, 85, 247, 0.05);
+            border-color: var(--accent-purple);
+        }
+
+        .user-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .user-item-name {
+            font-family: 'Orbitron';
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .user-item-role {
+            font-size: 11px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .user-item-role.owner {
+            background: rgba(220, 20, 60, 0.2);
+            color: var(--accent-red);
+        }
+
+        .user-item-role.admin {
+            background: rgba(168, 85, 247, 0.2);
+            color: var(--accent-purple);
+        }
+
+        .user-item-role.reseller {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--accent-orange);
+        }
+
+        .user-item-role.vip {
+            background: rgba(0, 242, 255, 0.2);
+            color: var(--accent-cyan);
+        }
+
+        .user-item-role.member {
+            background: rgba(107, 114, 128, 0.2);
+            color: var(--text-muted);
+        }
+
+        .user-item-info {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .access-denied {
+            background: var(--card-bg);
+            border: 1px solid var(--accent-red);
+            border-radius: 20px;
+            padding: 40px 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(220, 20, 60, 0.3);
+        }
+
+        .access-denied i {
+            font-size: 60px;
+            color: var(--accent-red);
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px rgba(220, 20, 60, 0.5);
+        }
+
+        .access-denied h2 {
+            font-family: 'Orbitron';
+            font-size: 24px;
+            color: var(--accent-red);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .access-denied p {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--accent-green);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .success-message.show {
+            display: flex;
+        }
+
+        .success-message i {
+            font-size: 24px;
+            color: var(--accent-green);
+        }
+
+        .success-message-text {
+            flex: 1;
+        }
+
+        .success-message-title {
+            font-family: 'Rajdhani';
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--accent-green);
+            margin-bottom: 4px;
+        }
+
+        .success-message-detail {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* NAV DOCK - IMPROVED SPACING */
+        .nav-container {
+            position: fixed;
+            bottom: 25px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            z-index: 100;
+            pointer-events: none;
+        }
+        
+        .floating-nav {
+            pointer-events: auto;
+            background: rgba(19, 19, 31, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 12px 25px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+        }
+        
+        .nav-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--text-muted);
+            transition: 0.3s;
+            position: relative;
+            cursor: pointer;
+            padding: 10px 18px;
+            border-radius: 15px;
+            min-width: 85px;
+        }
+        
+        .nav-link i {
+            font-size: 24px;
+            margin-bottom: 4px;
+            transition: 0.3s;
+        }
+
+        .nav-link span {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            font-family: 'Rajdhani';
+        }
+        
+        .nav-link.active {
+            color: #fff;
+            background: rgba(168, 85, 247, 0.15);
+        }
+        
+        .nav-link.active i {
+            color: var(--accent-purple);
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            .logo-circle { width: 80px; height: 80px; }
+            .username { font-size: 20px; }
+            .video-wrapper { height: 140px; }
+            .floating-nav { gap: 20px; padding: 10px 20px; }
+            .nav-link { min-width: 75px; padding: 8px 14px; }
+            .nav-link i { font-size: 22px; }
+            .nav-link span { font-size: 10px; }
+        }
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            .logo-circle { width: 80px; height: 80px; }
+            .username { font-size: 20px; }
+            .video-wrapper { height: 140px; }
+            .floating-nav { gap: 20px; padding: 10px 20px; }
+            .nav-link { min-width: 75px; padding: 8px 14px; }
+            .nav-link i { font-size: 22px; }
+            .nav-link span { font-size: 10px; }
+        }
+
+        /* 🔥 PAIRING MODAL ANIMATIONS - TARUH DI SINI */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        /* NOTIFICATION SYSTEM */
+.custom-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 18px 25px;
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    transform: translateX(400px);
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    z-index: 9999;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+.custom-notification.show {
+    transform: translateX(0);
+}
+
+.custom-notification i {
+    font-size: 20px;
+    animation: iconPulse 1.5s infinite;
+}
+
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.custom-notification.process {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-left: 4px solid #a855f7;
+}
+
+.custom-notification.success {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    border-left: 4px solid #10b981;
+}
+
+.custom-notification.error {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-left: 4px solid #dc143c;
+}
+    </style>
+
+<style>
+@font-face{
+font-family:'Rajdhani';
+src:url('../Rajdhani-Regular.ttf') format('truetype');
+}
+
+*{
+font-family:'Rajdhani',sans-serif !important;
+}
+
+body{
+background:#111315 !important;
+}
+
+.container,
+.card,
+.panel,
+.box,
+.footer-box,
+.title-box{
+background:rgba(22,24,28,.78)!important;
+border:1px solid rgba(255,255,255,.08)!important;
+backdrop-filter:blur(12px)!important;
+box-shadow:0 10px 30px rgba(0,0,0,.28)!important;
+}
+
+button,
+.btn{
+border-radius:14px!important;
+transition:.2s ease!important;
+}
+
+button:hover,
+.btn:hover{
+transform:translateY(-2px)!important;
+}
+
+</style>
+
+</head>
+<body>
+
+    <!-- ANIME PLAYER MODAL -->
+    <div class="anime-modal" id="animeModal">
+        <div class="anime-player">
+            <div class="player-header">
+                <div class="player-title" id="playerTitle">Anime Player</div>
+                <button class="close-player" onclick="closeAnimePlayer()">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="player-video">
+                <iframe id="animeIframe" src="" allowfullscreen></iframe>
+            </div>
+            <div class="player-controls">
+                <div class="player-description" id="playerDescription">
+                    Nikmati streaming anime dengan kualitas HD. Pilih dari berbagai anime populer.
+                </div>
+                <div class="player-stats">
+                    <div class="player-stat">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>HD Quality</span>
+                    </div>
+                    <div class="player-stat">
+                        <i class="fa-solid fa-play"></i>
+                        <span>Auto Play</span>
+                    </div>
+                    <div class="player-stat">
+                        <i class="fa-solid fa-closed-captioning"></i>
+                        <span>Subtitles</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        
+        <!-- DASHBOARD PAGE -->
+        <div id="dashboardPage" class="page active">
+            <header class="header">
+                <div class="logo">REVENANT</div>
+                <div class="header-actions">
+                    <button class="header-btn">
+                        <i class="fa-solid fa-bell"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="welcome-card">
+                <div class="welcome-text">
+                    <p>Welcome back</p>
+                    <h2 id="usernameDisplay">${username}</h2>
+                    
+                    <div class="stats-row">
+                        <div class="stat-mini">
+                            <div class="stat-mini-label">
+                                <i class="fa-solid fa-users"></i>
+                                <span>Online Users</span>
+                            </div>
+                            <div class="stat-mini-value" id="userCount">999</div>
+                        </div>
+                        <div class="stat-mini">
+                            <div class="stat-mini-label">
+                                <i class="fa-solid fa-link"></i>
+                                <span>Connections</span>
+                            </div>
+                            <div class="stat-mini-value" id="connections">999</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="section-header">Latest </h3>
+            
+            <div class="-wrapper">
+                <div class="-card">
+                    <img src="../assets/1.jpg" alt=" 1">
+                    <div class="card-overlay">
+                        <div class="card-title">Revenant</div>
+                        <div class="card-sub">Buy Access Chat @xenomarz </div>
+                    </div>
+                </div>
+                <div class="-card">
+                    <img src="../assets/2.jpg" alt=" 2">
+                    <div class="card-overlay">
+                        <div class="card-title">New Update</div>
+                        <div class="card-sub">Latest Features Released</div>
+                    </div>
+                </div>
+                <div class="-card">
+                    <img src="../assets/3.jpg" alt=" 3">
+                    <div class="card-overlay">
+                        <div class="card-title">Acces Developer</div>
+                        <div class="card-sub">Developer @xenomarz</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="section-header">Account Statistics</h3>
+            
+            <div class="account-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon purple">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Username</h3>
+                            <p class="purple" id="username">${username}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon orange">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Role</h3>
+                            <p class="orange" id="accessLevel">${displayRole}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card full">
+                    <div class="stat-header">
+                        <div class="stat-icon green">
+                            <i class="fa-solid fa-calendar"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Account Expires</h3>
+                            <p class="green" id="expiredDate">${formattedTime}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card full manager-card" onclick="switchPage('manager')">
+                    <div class="stat-header">
+                        <div class="stat-icon" style="background: rgba(220, 20, 60, 0.15); color: var(--accent-red);">
+                            <i class="fa-solid fa-bug"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Manager Bug Sender</h3>
+                            <p style="color: var(--accent-red);">Click to Manage</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ATTACK PAGE (WhatsApp) -->
+        <div id="attackPage" class="page">
+            <header class="header">
+                <div class="logo">Bug Menu</div>
+                <div class="header-actions">
+                    <button class="header-btn">
+                        <i class="fa-solid fa-bolt"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="header-card">
+                <div class="logo-circle">
+                    <img src="../assets/logo.jpg" alt="Vortex Logo">
+                </div>
+                <div class="username" id="attackUsername">${username}</div>
+            </div>
+
+            <div class="video-card">
+                <div class="video-wrapper">
+                    <video autoplay muted loop playsinline id="attackVideo">
+                        <source src="../assets/attack.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+
+            <div class="input-section">
+                <div class="section-header-attack">
+                    <div class="section-icon">
+                        <i class="fa-solid fa-mobile-screen"></i>
+                    </div>
+                    <div class="section-title">Nomor Target</div>
+                </div>
+                <div class="input-box">
+                    <input type="tel" class="cyber-input" id="targetInput" placeholder="Contoh: +62xxxxxxxxxxx" autocomplete="off">
+                    <i class="fa-solid fa-mobile-screen input-icon"></i>
+                </div>
+            </div>
+
+            <div class="bug-section">
+                <div class="section-header-attack">
+                    <div class="section-icon">
+                        <i class="fa-solid fa-bug"></i>
+                    </div>
+                    <div class="section-title">Pilih Bug</div>
+                </div>
+                <div class="dropdown-container">
+                    <div class="dropdown-trigger" id="dropdownTrigger" onclick="toggleDropdown()">
+                        <span id="selectedBug">CRASH CLICK</span>
+                        <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+                    </div>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <div class="dropdown-item selected" onclick="selectBug('uisystem', 'CRASH CLICK', this)">
+                            <i class="fa-solid fa-bomb"></i>
+                            <span>CRASH CLICK</span>
+                        </div>
+                        <div class="dropdown-item" onclick="selectBug('fc', 'FORCLOSE', this)">
+                            <i class="fa-solid fa-hourglass-half"></i>
+                            <span>FORCLOSE DARK</span>
+                        </div>
+                        <div class="dropdown-item" onclick="selectBug('kira', 'BLANK', this)">
+                            <i class="fa-brands fa-android"></i>
+                            <span>BLANK XENZZ</span>
+                        </div>
+                        <div class="dropdown-item" onclick="selectBug('invis', 'INVISIBLE', this)">
+                            <i class="fa-solid fa-ghost"></i>
+                            <span>INVISIBLE KINKXENZZ</span>
+                        </div>
+                        <div class="dropdown-item" onclick="selectBug('ulti', 'ULTIMATE', this)">
+                            <i class="fa-solid fa-skull"></i>
+                            <span>ULTIMATE DARK</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="send-btn" onclick="sendBug()">
+                <i class="fa-solid fa-paper-plane"></i>
+                KIRIM BUG
+            </button>
+        </div>
+
+<!-- TOOLS PAGE - ANIME STREAMING -->
+        <div id="toolsPage" class="page">
+            <header class="header">
+                <div class="logo">Anime Streaming</div>
+                <div class="header-actions">
+                    <button class="header-btn">
+                        <i class="fa-solid fa-tv"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="anime-header">
+                <h2>🎬 Anime Zone</h2>
+                <p>Stream anime favorit kamu dengan kualitas HD</p>
+            </div>
+
+            <div class="anime-grid">
+                <div class="anime-card" onclick="playAnime('Demon Slayer', 'https://www.youtube.com/embed/VQGCKyvzIM4')">
+                    <div class="anime-thumbnail anime1">
+                        <i class="fa-solid fa-play"></i>
+                    </div>
+                    <div class="anime-info">
+                        <div class="anime-title">Demon Slayer</div>
+                        <div class="anime-genre">Action • Fantasy</div>
+                    </div>
+                </div>
+
+                <div class="anime-card" onclick="playAnime('Attack on Titan', 'https://www.youtube.com/embed/LHtdKWJdif4')">
+                    <div class="anime-thumbnail anime2">
+                        <i class="fa-solid fa-play"></i>
+                    </div>
+                    <div class="anime-info">
+                        <div class="anime-title">Attack on Titan</div>
+                        <div class="anime-genre">Action • Drama</div>
+                    </div>
+                </div>
+
+                <div class="anime-card" onclick="playAnime('My Hero Academia', 'https://www.youtube.com/embed/D5fYOnwYkj4')">
+                    <div class="anime-thumbnail anime3">
+                        <i class="fa-solid fa-play"></i>
+                    </div>
+                    <div class="anime-info">
+                        <div class="anime-title">My Hero Academia</div>
+                        <div class="anime-genre">Action • Comedy</div>
+                    </div>
+                </div>
+
+                <div class="anime-card" onclick="playAnime('Jujutsu Kaisen', 'https://www.youtube.com/embed/4A_X-Dvl0ws')">
+                    <div class="anime-thumbnail anime4">
+                        <i class="fa-solid fa-play"></i>
+                    </div>
+                    <div class="anime-info">
+                        <div class="anime-title">Jujutsu Kaisen</div>
+                        <div class="anime-genre">Action • Supernatural</div>
+                    </div>
+                </div>
+
+                <div class="anime-card" onclick="playAnime('Naruto Shippuden', 'https://www.youtube.com/embed/1dy2zPPrKD0')">
+                    <div class="anime-thumbnail anime1">
+                        <i class="fa-solid fa-play"></i>
+                    </div>
+                    <div class="anime-info">
+                        <div class="anime-title">Naruto Shippuden</div>
+                        <div class="anime-genre">Action • Adventure</div>
+                    </div>
+                </div>
+
+                <div class="anime-card" onclick="playAnime('One Piece', 'https://www.youtube.com/embed/7bkjGun8oMY')">
+                    <div class="anime-thumbnail anime2">
+                        <i class="fa-solid fa-play"></i>
+                    </div>
+                    <div class="anime-info">
+                        <div class="anime-title">One Piece</div>
+                        <div class="anime-genre">Adventure • Comedy</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADMIN PAGE -->
+        <div id="adminPage" class="page">
+            <header class="header">
+                <div class="logo">Admin Control</div>
+                <div class="header-actions">
+                    <button class="header-btn">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div id="adminContent"></div>
+        </div>
+
+        <!-- MANAGER BUG SENDER PAGE -->
+        <div id="managerPage" class="page">
+            <header class="header">
+                <div class="logo">Manager Sender</div>
+                <div class="header-actions">
+                    <button class="header-btn" onclick="switchPage('dashboard')">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div id="managerContent">
+                <!-- Add Sender Section -->
+                <div class="admin-section">
+                    <div class="admin-section-header">
+                        <div class="admin-section-icon" style="background: rgba(220, 20, 60, 0.1); border-color: var(--accent-red); color: var(--accent-red);">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <div class="admin-section-title">Add New Sender</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" class="form-input" id="senderNumber" placeholder="628xxxxxxxxxx">
+                    </div>
+
+                    <button class="admin-btn" style="background: linear-gradient(135deg, var(--accent-red), #a00);" onclick="addSender()">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        ADD SENDER
+                    </button>
+                </div>
+
+                <!-- Active Senders List -->
+                <div class="admin-section">
+                    <div class="admin-section-header">
+                        <div class="admin-section-icon" style="background: rgba(16, 185, 129, 0.1); border-color: var(--accent-green); color: var(--accent-green);">
+                            <i class="fa-solid fa-list"></i>
+                        </div>
+                        <div class="admin-section-title">Active Senders</div>
+                    </div>
+                    
+                    <div class="user-list" id="senderList">
+                        <div style="text-align: center; padding: 20px; color: var(--text-muted);">
+                            <i class="fa-solid fa-spinner fa-spin" style="font-size: 30px;"></i>
+                            <p style="margin-top: 10px;">Loading senders...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FLOATING NAV - IMPROVED SPACING -->
+    <div class="nav-container">
+        <nav class="floating-nav">
+            <a class="nav-link active" onclick="switchPage('dashboard')">
+                <i class="fa-solid fa-house"></i>
+                <span>Home</span>
+            </a>
+            <a class="nav-link" onclick="switchPage('attack')">
+                <i class="fa-brands fa-whatsapp"></i>
+                <span>WhatsApp</span>
+            </a>
+            <a class="nav-link" onclick="switchPage('tools')">
+                <i class="fa-solid fa-wrench"></i>
+                <span>Tools</span>
+            </a>
+            <a class="nav-link" id="adminNavLink" onclick="switchPage('admin')">
+                <i class="fa-solid fa-user-shield"></i>
+                <span>Admin</span>
+            </a>
+        </nav>
+    </div>
+
+    <script>
+        // GLOBAL VARIABLES
+        var selectedBugValue = 'uisystem';
+        var selectedBugName = 'CRASH CLICK';
+        var currentUsername = '${username}';
+        var currentRole = '${rawRole}'.toLowerCase();
+        var lastTap = 0;
+
+        // ROLE-BASED ACCESS CONTROL
+        var rolePermissions = {
+            'owner': ['create', 'delete', 'view'],
+            'admin': ['create', 'delete', 'view'],
+            'reseller': ['create', 'view'],
+            'vip': ['view'],
+            'member': []
+        };
+
+        function hasPermission(permission) {
+            var permissions = rolePermissions[currentRole] || [];
+            return permissions.includes(permission);
+        }
+
+        function canCreateAccount() {
+            return hasPermission('create');
+        }
+
+        function canDeleteAccount() {
+            return hasPermission('delete');
+        }
+
+        function canViewUsers() {
+            return hasPermission('view');
+        }
+
+        // RENDER ADMIN CONTENT BASED ON ROLE
+        function renderAdminContent() {
+            var container = document.getElementById('adminContent');
+            
+            if (!canViewUsers()) {
+                container.innerHTML = `
+                    <div class="access-denied">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <h2>ACCESS DENIED</h2>
+                        <p>Anda tidak memiliki izin untuk mengakses halaman Admin Control.<br>Hubungi administrator untuk upgrade akun Anda.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            var createSection = '';
+            if (canCreateAccount()) {
+                createSection = `
+                    <div class="admin-section">
+                        <div class="success-message" id="successMessage">
+                            <i class="fa-solid fa-check-circle"></i>
+                            <div class="success-message-text">
+                                <div class="success-message-title">Account Created Successfully</div>
+                                <div class="success-message-detail" id="successDetail"></div>
+                            </div>
+                        </div>
+
+                        <div class="admin-section-header">
+                            <div class="admin-section-icon">
+                                <i class="fa-solid fa-user-plus"></i>
+                            </div>
+                            <div class="admin-section-title">Create Account</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-input" id="newUsername" placeholder="Enter username">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="text" class="form-input" id="newPassword" placeholder="Auto-generated or custom">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Duration (Days)</label>
+                            <input type="number" class="form-input" id="newDuration" placeholder="e.g., 30" value="30">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Role</label>
+                            <select class="form-select" id="newRole">
+                                ${getAllowedRoles().map(role => `<option value="${role}">${role.toUpperCase()}</option>`).join('')}
+                            </select>
+                        </div>
+
+                        <button class="admin-btn" onclick="createAccount()">
+                            <i class="fa-solid fa-user-plus"></i>
+                            CREATE ACCOUNT
+                        </button>
+                    </div>
+                `;
+            }
+
+            var deleteSection = '';
+            if (canDeleteAccount()) {
+                deleteSection = `
+                    <div class="admin-section">
+                        <div class="admin-section-header">
+                            <div class="admin-section-icon" style="background: rgba(220, 20, 60, 0.1); border-color: var(--accent-red); color: var(--accent-red);">
+                                <i class="fa-solid fa-user-minus"></i>
+                            </div>
+                            <div class="admin-section-title">Delete Account</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Username to Delete</label>
+                            <input type="text" class="form-input" id="deleteUsername" placeholder="Enter username">
+                        </div>
+
+                        <button class="admin-btn delete" onclick="deleteAccount()">
+                            <i class="fa-solid fa-trash"></i>
+                            DELETE ACCOUNT
+                        </button>
+                    </div>
+                `;
+            }
+
+            var userListSection = `
+                <div class="admin-section">
+                    <div class="admin-section-header">
+                        <div class="admin-section-icon">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div class="admin-section-title">User List</div>
+                    </div>
+                    
+                    <div class="user-list" id="userList">
+                        <div style="text-align: center; padding: 20px; color: var(--text-muted);">
+                            <i class="fa-solid fa-spinner fa-spin" style="font-size: 30px;"></i>
+                            <p style="margin-top: 10px;">Loading users...</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = createSection + deleteSection + userListSection;
+            
+            loadUserList();
+        }
+
+        // GET ALLOWED ROLES FOR CURRENT USER
+        function getAllowedRoles() {
+            var allRoles = ['member', 'vip', 'reseller', 'admin', 'owner'];
+            
+            if (currentRole === 'owner') {
+                return allRoles;
+            } else if (currentRole === 'admin') {
+                return ['member', 'vip', 'reseller', 'admin'];
+            } else if (currentRole === 'reseller') {
+                return ['member', 'vip'];
+            }
+            
+            return ['member'];
+        }
+
+        // CREATE ACCOUNT
+        async function createAccount() {
+            var username = document.getElementById('newUsername').value.trim();
+            var password = document.getElementById('newPassword').value.trim();
+            var duration = document.getElementById('newDuration').value.trim();
+            var role = document.getElementById('newRole').value;
+
+            if (!username) {
+                alert('Username tidak boleh kosong!');
+                return;
+            }
+
+            if (!duration || duration < 1) {
+                alert('Duration minimal 1 hari!');
+                return;
+            }
+
+            var data = {
+                username: username,
+                customKey: password || null,
+                duration: duration + 'd',
+                role: role
+            };
+
+            try {
+                var response = await fetch('/api/create-account', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                var result = await response.json();
+
+                if (result.success) {
+                    document.getElementById('successDetail').textContent = `User: ${username} | Role: ${role.toUpperCase()}`;
+                    document.getElementById('successMessage').classList.add('show');
+                    
+                    document.getElementById('newUsername').value = '';
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('newDuration').value = '30';
+                    
+                    setTimeout(function() {
+                        document.getElementById('successMessage').classList.remove('show');
+                    }, 5000);
+
+                    loadUserList();
+                } else {
+                    alert('Gagal: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat membuat akun');
+            }
+        }
+
+// DELETE ACCOUNT - UPDATED
+async function deleteAccount() {
+    var username = document.getElementById('deleteUsername').value.trim();
+
+    if (!username) {
+        alert('Username tidak boleh kosong!');
+        return;
+    }
+
+    if (!confirm('⚠️ KONFIRMASI HAPUS\n\nYakin ingin menghapus user: ' + username + '?\n\nAksi ini TIDAK BISA dibatalkan!')) {
+        return;
+    }
+
+    try {
+        var response = await fetch('/api/delete-account', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: username })
+        });
+
+        var result = await response.json();
+
+        if (result.success) {
+            alert('✅ User ' + username + ' berhasil dihapus!');
+            document.getElementById('deleteUsername').value = '';
+            loadUserList();
+        } else {
+            alert('❌ Gagal: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('❌ Terjadi kesalahan saat menghapus akun');
+    }
+}
+
+        // LOAD USER LIST
+        async function loadUserList() {
+            var container = document.getElementById('userList');
+            
+            try {
+                var response = await fetch('/api/list-accounts');
+                var users = await response.json();
+
+                if (users.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 20px; color: var(--text-muted);">
+                            <i class="fa-solid fa-inbox" style="font-size: 40px; margin-bottom: 10px; opacity: 0.5;"></i>
+                            <p>Belum ada user terdaftar</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                var html = '';
+                users.forEach(function(user) {
+                    var expDate = new Date(user.expired).toLocaleString('id-ID', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    html += `
+                        <div class="user-item">
+                            <div class="user-item-header">
+                                <div class="user-item-name">${user.username}</div>
+                                <div class="user-item-role ${user.role}">${user.role.toUpperCase()}</div>
+                            </div>
+                            <div class="user-item-info">
+                                Expired: ${expDate} WIB
+                            </div>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading users:', error);
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 20px; color: var(--text-muted);">
+                        <i class="fa-solid fa-exclamation-circle" style="font-size: 40px; margin-bottom: 10px; color: var(--accent-red);"></i>
+                        <p>Gagal memuat daftar user</p>
+                    </div>
+                `;
+            }
+        }
+
+        // PAGE SWITCHING
+        function switchPage(page) {
+            var pages = document.querySelectorAll('.page');
+            var navLinks = document.querySelectorAll('.nav-link');
+            
+            pages.forEach(function(p) { p.classList.remove('active'); });
+            navLinks.forEach(function(l) { l.classList.remove('active'); });
+            
+            if (page === 'dashboard') {
+                document.getElementById('dashboardPage').classList.add('active');
+                navLinks[0].classList.add('active');
+            } else if (page === 'attack') {
+                document.getElementById('attackPage').classList.add('active');
+                navLinks[1].classList.add('active');
+                
+                var video = document.getElementById('attackVideo');
+                if (video) {
+                    video.play().catch(function(e) {
+                        console.log('Video autoplay prevented:', e);
+                    });
+                }
+            } else if (page === 'tools') {
+                document.getElementById('toolsPage').classList.add('active');
+                navLinks[2].classList.add('active');
+            } else if (page === 'admin') {
+                document.getElementById('adminPage').classList.add('active');
+                navLinks[3].classList.add('active');
+                renderAdminContent();
+            } else if (page === 'manager') {
+                document.getElementById('managerPage').classList.add('active');
+                loadSenderList();
+            }
+        }
+
+        // DROPDOWN FUNCTIONS
+        function toggleDropdown() {
+            var menu = document.getElementById('dropdownMenu');
+            var trigger = document.getElementById('dropdownTrigger');
+            menu.classList.toggle('show');
+            trigger.classList.toggle('active');
+        }
+
+        function selectBug(value, name, element) {
+            selectedBugValue = value;
+            selectedBugName = name;
+            
+            document.getElementById('selectedBug').textContent = name;
+            
+            var items = document.querySelectorAll('.dropdown-item');
+            for (var i = 0; i < items.length; i++) {
+                items[i].classList.remove('selected');
+            }
+            
+            element.classList.add('selected');
+            toggleDropdown();
+        }
+
+      // SEND BUG FUNCTION - VERSI BARU
+async function sendBug() {
+    var targetInput = document.getElementById('targetInput').value.trim();
+    
+    if(!targetInput) {
+        showNotification('Masukkan nomor target terlebih dahulu!', 'error', 'fa-exclamation-triangle');
+        return;
+    }
+    
+    var cleanedTarget = targetInput.replace(/\D/g, '');
+    
+    if(cleanedTarget.length < 8 || cleanedTarget.length > 15) {
+        showNotification('Format nomor tidak valid! Minimal 8 digit, maksimal 15 digit.', 'error', 'fa-exclamation-circle');
+        return;
+    }
+
+    // Step 1: Tampilkan notifikasi proses
+    showNotification('Sending bug process...', 'process', 'fa-spinner fa-spin');
+    
+    // Step 2: Setelah 1.5 detik, tampilkan sukses dengan nomor target
+    setTimeout(() => {
+        showNotification(`Send bug success (${cleanedTarget})`, 'success', 'fa-check-circle');
+        
+        // Step 3: Redirect setelah 2 detik
+        setTimeout(() => {
+            window.location.href = `/execution?target=${cleanedTarget}&mode=${selectedBugValue}`;
+        }, 2000);
+    }, 2000);
+}
+
+// ENHANCED NOTIFICATION FUNCTION
+function showNotification(message, type, icon) {
+    // Hapus notifikasi lama jika ada
+    const oldNotif = document.querySelector('.custom-notification');
+    if(oldNotif) {
+        oldNotif.classList.remove('show');
+        setTimeout(() => oldNotif.remove(), 300);
+    }
+    
+    // Buat elemen notifikasi
+    const notification = document.createElement('div');
+    notification.className = `custom-notification ${type}`;
+    
+    // Tambahkan icon dan text
+    notification.innerHTML = `
+        <i class="fa-solid ${icon}"></i>
+        <span>${message}</span>
+    `;
+    
+    // Tambahkan ke body
+    document.body.appendChild(notification);
+    
+    // Animasi masuk dengan delay kecil
+    setTimeout(() => notification.classList.add('show'), 10);
+    
+    // Auto remove setelah 4 detik (kecuali untuk process yang akan di-replace)
+    if(type !== 'process') {
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 400);
+        }, 4000);
+    }
+}
+        // ANIME PLAYER FUNCTIONS
+        function playAnime(title, videoUrl) {
+            document.getElementById('playerTitle').textContent = title;
+            document.getElementById('animeIframe').src = videoUrl;
+            document.getElementById('animeModal').classList.add('show');
+            
+            if(navigator.vibrate) navigator.vibrate(50);
+        }
+
+        function closeAnimePlayer() {
+            document.getElementById('animeModal').classList.remove('show');
+            document.getElementById('animeIframe').src = '';
+        }
+
+        //  CARD INTERACTIONS
+        function setupCards() {
+            var Cards = document.querySelectorAll('.-card');
+            Cards.forEach(function(card) {
+                card.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.98)';
+                    var self = this;
+                    setTimeout(function() {
+                        self.style.transform = '';
+                    }, 150);
+                });
+            });
+        }
+
+        // CLOSE DROPDOWN WHEN CLICKING OUTSIDE
+        document.addEventListener('click', function(event) {
+            var dropdown = document.getElementById('dropdownMenu');
+            var trigger = document.getElementById('dropdownTrigger');
+            
+            if (dropdown && trigger && !trigger.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.remove('show');
+                trigger.classList.remove('active');
+            }
+        });
+
+        // CLOSE ANIME MODAL WHEN CLICKING OUTSIDE
+        var animeModal = document.getElementById('animeModal');
+        if (animeModal) {
+            animeModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeAnimePlayer();
+                }
+            });
+        }
+
+        // HIDE ADMIN NAV IF NO PERMISSION
+        function setupNavigation() {
+            var adminNav = document.getElementById('adminNavLink');
+            if (adminNav && !canViewUsers()) {
+                adminNav.style.display = 'none';
+            }
+        }
+
+       // MANAGER BUG SENDER FUNCTIONS - UPDATED WITH PAIRING CODE DISPLAY
+
+async function addSender() {
+    var number = document.getElementById('senderNumber').value.trim();
+    
+    if (!number) {
+        alert('Masukkan nomor terlebih dahulu!');
+        return;
+    }
+    
+    var cleanNumber = number.replace(/\D/g, '');
+    
+    if (cleanNumber.length < 8 || cleanNumber.length > 15) {
+        alert('Format nomor tidak valid!');
+        return;
+    }
+    
+    // 🔥 LOADING INDICATOR
+    var btn = event.target;
+    var originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> GENERATING CODE...';
+    
+    try {
+        var response = await fetch('/api/add-sender', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ number: cleanNumber })
+        });
+        
+        var result = await response.json();
+        
+        if (result.success) {
+            // 🔥 TAMPILKAN MODAL DENGAN PAIRING CODE
+            showPairingSuccess(cleanNumber, result.pairingCode);
+            document.getElementById('senderNumber').value = '';
+            
+            // ✅ REFRESH LIST SETELAH 3 DETIK
+            setTimeout(function() {
+                loadSenderList();
+            }, 3000);
+        } else {
+            alert('❌ Gagal: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('❌ Terjadi kesalahan saat menambah sender');
+    } finally {
+        // Reset button
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }
+}
+
+// 🔥 NEW FUNCTION: Show Pairing Success Modal WITH CODE
+function showPairingSuccess(number, code) {
+    var modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.3s ease;
+    `;
+    
+    modal.innerHTML = `
+        <div style="
+            background: var(--card-bg);
+            border: 2px solid var(--accent-red);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 0 50px rgba(220, 20, 60, 0.5);
+            text-align: center;
+            animation: slideUp 0.3s ease;
+        ">
+            <div style="
+                width: 80px;
+                height: 80px;
+                margin: 0 auto 20px;
+                background: rgba(220, 20, 60, 0.2);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                animation: pulse 2s infinite;
+            ">
+                <i class="fa-solid fa-qrcode" style="font-size: 40px; color: var(--accent-red);"></i>
+            </div>
+            
+            <h2 style="
+                font-family: 'Orbitron';
+                color: var(--accent-red);
+                margin-bottom: 15px;
+                font-size: 24px;
+            ">PAIRING CODE READY</h2>
+            
+            <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 14px;">
+                Pairing code untuk <b style="color: #fff;">${number}</b> telah digenerate!
+            </p>
+            
+            <div style="
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border-color);
+                border-radius: 12px;
+                padding: 20px;
+                margin-bottom: 25px;
+            ">
+                <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 10px;">
+                    🔑 KODE PAIRING ANDA
+                </p>
+                <div style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 10px;
+                    font-family: 'Share Tech Mono';
+                    color: var(--accent-cyan);
+                    font-size: 24px;
+                    font-weight: 700;
+                    letter-spacing: 3px;
+                    background: rgba(0, 242, 255, 0.1);
+                    padding: 15px;
+                    border-radius: 10px;
+                    border: 1px solid var(--accent-cyan);
+                ">
+                    <i class="fa-solid fa-key"></i>
+                    <span id="pairingCodeDisplay">${code}</span>
+                </div>
+                <button onclick="copyPairingCode('${code}')" style="
+                    margin-top: 15px;
+                    background: rgba(0, 242, 255, 0.1);
+                    border: 1px solid var(--accent-cyan);
+                    color: var(--accent-cyan);
+                    padding: 10px 20px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-size: 12px;
+                    font-weight: 600;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    margin-left: auto;
+                    margin-right: auto;
+                    transition: 0.3s;
+                " onmouseover="this.style.background='rgba(0, 242, 255, 0.2)'" onmouseout="this.style.background='rgba(0, 242, 255, 0.1)'">
+                    <i class="fa-solid fa-copy"></i>
+                    COPY CODE
+                </button>
+            </div>
+            
+            <div style="
+                background: rgba(220, 20, 60, 0.1);
+                border-left: 3px solid var(--accent-red);
+                padding: 15px;
+                margin-bottom: 20px;
+                text-align: left;
+                font-size: 13px;
+                color: var(--text-muted);
+                line-height: 1.6;
+            ">
+                <b style="color: var(--accent-red);">📝 Langkah Selanjutnya:</b><br>
+                1. Buka <b>WhatsApp</b> Anda<br>
+                2. Menu → <b>Perangkat Tertaut</b><br>
+                3. Pilih <b>Tautkan dengan Nomor Telepon</b><br>
+                4. Masukkan kode: <b style="color: var(--accent-cyan);">${code}</b><br>
+                5. Selesai! ✅
+            </div>
+            
+            <button onclick="this.parentElement.parentElement.remove()" style="
+                width: 100%;
+                background: linear-gradient(135deg, var(--accent-red), #a00);
+                border: none;
+                border-radius: 12px;
+                padding: 15px;
+                color: white;
+                font-family: 'Orbitron';
+                font-size: 14px;
+                font-weight: 700;
+                cursor: pointer;
+                letter-spacing: 1px;
+                transition: 0.3s;
+            " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                <i class="fa-solid fa-check"></i> MENGERTI
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Auto close after 30 seconds
+    setTimeout(function() {
+        if (modal.parentElement) {
+            modal.remove();
+        }
+    }, 30000);
+}
+
+// 🔥 FUNGSI COPY PAIRING CODE
+function copyPairingCode(code) {
+    // Copy to clipboard
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(code).then(function() {
+            alert('✅ Kode berhasil disalin: ' + code);
+        }).catch(function() {
+            // Fallback method
+            const input = document.createElement('input');
+            input.value = code;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            alert('✅ Kode berhasil disalin: ' + code);
+        });
+    }
+}
+
+async function loadSenderList() {
+    var container = document.getElementById('senderList');
+    
+    // Show loading state
+    container.innerHTML = `
+        <div style="text-align: center; padding: 20px; color: var(--text-muted);">
+            <i class="fa-solid fa-spinner fa-spin" style="font-size: 30px;"></i>
+            <p style="margin-top: 10px;">Loading senders...</p>
+        </div>
+    `;
+    
+    try {
+        var response = await fetch('/api/list-senders');
+        
+        // Cek apakah response berhasil
+        if (!response.ok) {
+            throw new Error('Failed to fetch senders');
+        }
+        
+        var senders = await response.json();
+        
+        // Jika tidak ada sender
+        if (!senders || senders.length === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                    <i class="fa-solid fa-inbox" style="font-size: 50px; margin-bottom: 15px; opacity: 0.3;"></i>
+                    <p style="font-size: 16px; margin-bottom: 5px;">Belum Ada Sender Aktif</p>
+                    <p style="font-size: 12px; opacity: 0.7;">Tambahkan sender baru menggunakan form di atas</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Render list sender
+        var html = '';
+        senders.forEach(function(sender) {
+            html += `
+                <div class="user-item" style="position: relative;">
+                    <div style="
+                        position: absolute;
+                        top: 10px;
+                        right: 10px;
+                        background: rgba(16, 185, 129, 0.2);
+                        color: var(--accent-green);
+                        padding: 4px 10px;
+                        border-radius: 20px;
+                        font-size: 10px;
+                        font-weight: 600;
+                        letter-spacing: 0.5px;
+                    ">
+                        <i class="fa-solid fa-circle" style="font-size: 6px; margin-right: 5px;"></i>
+                        ONLINE
+                    </div>
+                    
+                    <div class="user-item-header">
+                        <div class="user-item-name" style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-brands fa-whatsapp" style="color: var(--accent-green); font-size: 20px;"></i>
+                            ${sender}
+                        </div>
+                    </div>
+                    
+                    <button class="admin-btn delete" style="
+                        width: 100%; 
+                        padding: 12px; 
+                        font-size: 13px; 
+                        margin-top: 10px;
+                    " onclick="deleteSender('${sender}')">
+                        <i class="fa-solid fa-trash"></i>
+                        DELETE SENDER
+                    </button>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+        
+    } catch (error) {
+        console.error('Error loading senders:', error);
+        container.innerHTML = `
+            <div style="text-align: center; padding: 40px;">
+                <i class="fa-solid fa-exclamation-triangle" style="font-size: 50px; margin-bottom: 15px; color: var(--accent-red);"></i>
+                <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 10px;">Gagal Memuat Daftar Sender</p>
+                <button class="admin-btn" style="width: auto; padding: 10px 20px; font-size: 12px;" onclick="loadSenderList()">
+                    <i class="fa-solid fa-refresh"></i> COBA LAGI
+                </button>
+            </div>
+        `;
+    }
+}
+
+async function deleteSender(number) {
+    if (!confirm('⚠️ Yakin ingin menghapus sender ' + number + '?\n\nSemua session akan dihapus permanen!')) {
+        return;
+    }
+    
+    try {
+        var response = await fetch('/api/delete-sender', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ number: number })
+        });
+        
+        var result = await response.json();
+        
+        if (result.success) {
+            alert('✅ Sender berhasil dihapus!');
+            loadSenderList();
+        } else {
+            alert('❌ Gagal: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('❌ Terjadi kesalahan saat menghapus sender');
+    }
+}
+
+        // INITIALIZATION
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Dashboard loaded');
+            console.log('Current User:', currentUsername);
+            console.log('Current Role:', currentRole);
+            
+            setupNavigation();
+            setupCards();
+            
+            var video = document.getElementById('attackVideo');
+            if (video) {
+                video.play().catch(function(e) {
+                    console.log('Video autoplay prevented:', e);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
